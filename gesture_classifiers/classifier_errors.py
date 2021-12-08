@@ -43,6 +43,11 @@ class NoSavedModelExist(Error):
     pass
 
 
+class NoTrainingData(Error):
+    """When there is no training data"""
+    pass
+
+
 class NoDataReader(Error):
     """When there is no data reader for test and training"""
     pass
