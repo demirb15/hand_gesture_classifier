@@ -1,24 +1,24 @@
                 precision    recall  f1-score   support
 
-   devils_horn       0.99      0.98      0.98       286
-    finger_gun       1.00      1.00      1.00       255
-          fist       0.98      0.99      0.98       443
-  five_fingers       0.99      0.79      0.88       331
-  four_fingers       0.96      0.87      0.91       175
-  german_three       0.99      0.92      0.95       162
-     good_luck       0.75      0.98      0.85       316
-    hand_phone       0.99      0.98      0.99       315
-  index_finger       1.00      1.00      1.00       308
-live_long_sign       0.78      0.91      0.84       250
-okay_hand_sign       0.98      0.97      0.97       418
- pinecone_sign       1.00      1.00      1.00       139
-      pinky_up       0.96      0.98      0.97       164
-stop_hand_sign       0.87      0.98      0.92       358
- three_fingers       0.98      0.99      0.99       311
-   thumbs_down       0.99      0.99      0.99       200
-     thumbs_up       0.98      0.98      0.98       294
-   two_fingers       0.95      0.63      0.75       255
+   devils_horn       1.00      0.98      0.99       316
+    finger_gun       1.00      1.00      1.00       244
+          fist       0.99      0.99      0.99       430
+  five_fingers       0.90      0.84      0.87       306
+  four_fingers       0.95      0.82      0.88       207
+  german_three       0.94      0.89      0.91       149
+     good_luck       0.97      0.89      0.93       316
+    hand_phone       0.98      0.97      0.98       330
+  index_finger       0.97      1.00      0.99       296
+live_long_sign       0.85      0.82      0.83       222
+okay_hand_sign       0.99      0.95      0.97       440
+ pinecone_sign       0.98      1.00      0.99       121
+      pinky_up       0.94      0.96      0.95       175
+stop_hand_sign       0.82      0.99      0.90       355
+ three_fingers       0.98      0.98      0.98       285
+   thumbs_down       0.99      0.98      0.98       216
+     thumbs_up       0.99      1.00      1.00       305
+   two_fingers       0.88      0.97      0.93       267
 
-      accuracy                           0.94      4980
-     macro avg       0.95      0.94      0.94      4980
-  weighted avg       0.95      0.94      0.94      4980
+      accuracy                           0.95      4980
+     macro avg       0.95      0.95      0.95      4980
+  weighted avg       0.95      0.95      0.95      4980
