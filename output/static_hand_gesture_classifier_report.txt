@@ -1,0 +1,24 @@
+                precision    recall  f1-score   support
+
+   devils_horn       0.99      0.98      0.98       286
+    finger_gun       1.00      1.00      1.00       255
+          fist       0.98      0.99      0.98       443
+  five_fingers       0.99      0.79      0.88       331
+  four_fingers       0.96      0.87      0.91       175
+  german_three       0.99      0.92      0.95       162
+     good_luck       0.75      0.98      0.85       316
+    hand_phone       0.99      0.98      0.99       315
+  index_finger       1.00      1.00      1.00       308
+live_long_sign       0.78      0.91      0.84       250
+okay_hand_sign       0.98      0.97      0.97       418
+ pinecone_sign       1.00      1.00      1.00       139
+      pinky_up       0.96      0.98      0.97       164
+stop_hand_sign       0.87      0.98      0.92       358
+ three_fingers       0.98      0.99      0.99       311
+   thumbs_down       0.99      0.99      0.99       200
+     thumbs_up       0.98      0.98      0.98       294
+   two_fingers       0.95      0.63      0.75       255
+
+      accuracy                           0.94      4980
+     macro avg       0.95      0.94      0.94      4980
+  weighted avg       0.95      0.94      0.94      4980
