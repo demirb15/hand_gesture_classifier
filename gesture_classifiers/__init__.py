@@ -1,0 +1,1 @@
+from gesture_classifiers.static_hand_gesture_classifier import StaticHandGestureClassifier
