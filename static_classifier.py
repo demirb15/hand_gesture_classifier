@@ -11,6 +11,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MultiLabelBinarizer
 
 from hand_detector import HandDetector
+from utils import draw_graph
 
 
 class StaticClassifier:
@@ -29,6 +30,10 @@ class StaticClassifier:
     def __init__(self):
         try:
             os.mkdir(f'classification_models/{self.model_name}')
+        except FileExistsError:
+            pass
+        try:
+            os.mkdir(f'outputs/')
         except FileExistsError:
             pass
 
@@ -81,7 +86,9 @@ class StaticClassifier:
                                  epochs=epochs,
                                  batch_size=batch_size,
                                  callbacks=[self.checkpoint_callback])
-        print(history)
+        fig_path = os.path.join('outputs', f'{self.model_name}_fig.png')
+        history_path = os.path.join('outputs', f'{self.model_name}_report.txt')
+        draw_graph(history, epochs, fig_path)
         return
 
     def model_create(self):
