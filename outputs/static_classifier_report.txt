@@ -1,19 +1,17 @@
-                 precision    recall  f1-score   support
+               precision    recall  f1-score   support
 
-crossed_fingers       0.00      0.00      0.00         3
-    devils_horn       0.20      0.25      0.22         4
-   five_fingers       0.33      0.33      0.33         3
-   four_fingers       0.00      0.00      0.00         4
-   german_three       1.00      0.40      0.57         5
-     german_two       1.00      0.50      0.67         2
-   index_finger       0.00      0.00      0.00         2
-      live_long       0.40      1.00      0.57         2
-        ok_hand       0.33      0.33      0.33         3
-  three_fingers       0.33      0.20      0.25         5
-    thumbs_down       1.00      0.75      0.86         4
-      thumbs_up       0.67      1.00      0.80         2
-    two_fingers       0.00      0.00      0.00         3
+ five_fingers       0.85      0.85      0.85        13
+ four_fingers       1.00      0.94      0.97        16
+ german_three       0.91      0.71      0.80        14
+   german_two       0.73      0.85      0.79        13
+ index_finger       0.61      0.92      0.73        12
+    live_long       0.88      0.78      0.82         9
+      ok_hand       0.90      0.82      0.86        11
+three_fingers       0.92      0.86      0.89        14
+  thumbs_down       0.89      0.89      0.89        19
+    thumbs_up       0.84      0.89      0.86        18
+  two_fingers       0.91      0.77      0.83        13
 
-       accuracy                           0.33        42
-      macro avg       0.41      0.37      0.35        42
-   weighted avg       0.42      0.33      0.35        42
+     accuracy                           0.85       152
+    macro avg       0.86      0.84      0.85       152
+ weighted avg       0.86      0.85      0.85       152

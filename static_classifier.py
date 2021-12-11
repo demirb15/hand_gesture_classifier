@@ -1,12 +1,11 @@
-import math
 import os
 import pickle
-
 import numpy
 from cv2 import cv2
-from keras import Sequential
-from keras.callbacks import ModelCheckpoint
-from keras.layers import Dense
+from tensorflow.keras import Sequential
+from tensorflow.keras import initializers
+from tensorflow.keras.callbacks import ModelCheckpoint
+from tensorflow.keras.layers import Dense, Dropout
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MultiLabelBinarizer
 
@@ -63,13 +62,13 @@ class StaticClassifier:
         for each in only_files:
             path = os.path.join(self.processed_data_path, each)
             data = numpy.loadtxt(path, delimiter=",")
-            samples.append(process_feature(data))
+            samples.append(self.process_feature(data))
             expected.append(each[:-11])
 
         data_x = numpy.array(samples)
         data_x = data_x.reshape(-1, data_x.shape[1])
         data_y = numpy.array(expected).reshape(-1, 1)
-        x_train, x_test, y_train, y_test = train_test_split(data_x, data_y, test_size=0.33)
+        x_train, x_test, y_train, y_test = train_test_split(data_x, data_y, test_size=0.33, random_state=42)
         y_train = self.multi_label_binarizer.fit_transform(y_train)
         y_test = self.multi_label_binarizer.transform(y_test)
         self.feature_vector = x_test.shape[1]
@@ -91,18 +90,22 @@ class StaticClassifier:
         fig_path = os.path.join('outputs', f'{self.model_name}_fig.png')
         history_path = os.path.join('outputs', f'{self.model_name}_report.txt')
         draw_graph(history, epochs, fig_path)
-        write_report(y_test=y_test, predictions=predictions, mlb=self.multi_label_binarizer, file_path=history_path)
+        report = write_report(y_test=y_test, predictions=predictions, mlb=self.multi_label_binarizer,
+                              file_path=history_path)
+        print(report)
         return
 
     def model_create(self):
         self.model = Sequential()
-        self.model.add(Dense(420, input_shape=(self.feature_vector,),
-                             kernel_initializer='he_uniform', activation='relu'))
-        self.model.add(Dense(210, activation="relu"))
-        self.model.add(Dense(69, activation="relu"))
-        self.model.add(Dense(self.output_classes, activation="softmax"))
+        k_initializer = initializers.he_uniform
+        self.model.add(Dense(101, input_shape=(self.feature_vector,),
+                             kernel_initializer=k_initializer, activation='relu'))
+        self.model.add(Dropout(0.2))
+        # self.model.add(Dense(90, activation="relu"))
+        self.model.add(Dense(42, kernel_initializer=k_initializer, activation="relu"))
+        self.model.add(Dense(self.output_classes, kernel_initializer=k_initializer, activation="softmax"))
         self.model.compile(loss='categorical_crossentropy',
-                           optimizer='adam',
+                           optimizer='nadam',
                            metrics=["categorical_accuracy"])
         self.checkpoint_callback = ModelCheckpoint(filepath=self.checkpoint_path,
                                                    save_weights_only=True,
@@ -114,7 +117,7 @@ class StaticClassifier:
             self.multi_label_binarizer = pickle.load(f)
         self.output_classes = len(self.multi_label_binarizer.classes_)
         temp = numpy.zeros(63).reshape(-1, 63)
-        self.feature_vector = process_feature(temp).shape[0]
+        self.feature_vector = self.process_feature(temp).shape[0]
         self.model_create()
         self.model.load_weights(self.checkpoint_path).expect_partial()
         return
@@ -122,7 +125,7 @@ class StaticClassifier:
     def predict(self, features):
         if features is None:
             return None
-        predictions = self.model.predict(process_feature(features).reshape(-1, self.feature_vector))
+        predictions = self.model.predict(self.process_feature(features).reshape(-1, self.feature_vector))
         index = predictions.argmax(axis=1)
         predict_vec = numpy.zeros(predictions.shape)
         predict_vec[0][index] = 1
@@ -134,25 +137,27 @@ class StaticClassifier:
         except KeyError:
             return "No Match"
 
+    @staticmethod
+    def process_feature(feature: numpy.array):
+        """
+        Process feature vector
+        :param feature: feature vector (21,3)
+        :return: processed feature vector
+        """
+        f = feature.reshape(21, 3)
+        # normalize to wrist, hence now each point a vector
+        f = f - f[0]
+        # blacklist
+        # indexes = 0
+        indexes = (0, 1, 7, 9, 11, 13, 15, 19)
+        f = numpy.delete(f, indexes, axis=0)
+        for index in range(len(f)):
+            e_d = euclidean_distance(f[index])
+            if e_d != 0:
+                f[index] = f[index] / e_d
+        # f = numpy.abs(f)
+        return f.flatten()
+
 
 def euclidean_distance(f):
     return numpy.sqrt(f[0] ** 2 + f[1] ** 2 + f[2] ** 2)
-
-
-def process_feature(feature: numpy.array):
-    """
-    Process feature vector
-    :param feature: feature vector (21,3)
-    :return: processed feature vector
-    """
-    f = feature.reshape(21, 3)
-    # normalize to wrist, hence now each point a vector
-    f = f - f[0]
-    # blacklist
-    indexes = (0, 1, 7, 9, 11, 13, 15, 19)
-    f = numpy.delete(f, indexes, axis=0)
-    for index in range(len(f)):
-        e_d = euclidean_distance(f[index])
-        if e_d != 0:
-            f[index] = f[index] / e_d
-    return f.flatten()

@@ -3,20 +3,6 @@
   <component name="CsvFileAttributes">
     <option name="attributeMap">
       <map>
-        <entry key="/processed_data/static_classifier/crossed_fingers_160947.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="/processed_data/static_classifier/crossed_fingers_161008.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
         <entry key="/processed_data/static_classifier/live_long_160343.csv">
           <value>
             <Attribute>
@@ -25,13 +11,6 @@
           </value>
         </entry>
         <entry key="/processed_data/static_classifier/ok_hand_154945.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="/saved_data/dynamic/move_down_70.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
