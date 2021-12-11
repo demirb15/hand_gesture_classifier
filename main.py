@@ -4,7 +4,7 @@ from static_classifier import StaticClassifier
 
 if __name__ == '__main__':
     sc = StaticClassifier()
-    sc.load_data()
+    x_train, x_test, y_train, y_test = sc.load_data()
     exit()
     capture = cv2.VideoCapture(0)
     cv2.namedWindow("DISPLAY", cv2.WINDOW_FULLSCREEN)
