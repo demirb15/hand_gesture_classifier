@@ -109,6 +109,15 @@ class StaticClassifier:
                                                    verbose=1)
         return
 
+    def load_model(self):
+        with open(self.multilabel_path, 'rb') as f:
+            self.multi_label_binarizer = pickle.load(f)
+        self.output_classes = len(self.multi_label_binarizer.classes_)
+        temp = numpy.zeros(63).reshape(-1, 63)
+        self.feature_vector = process_feature(temp).shape[0]
+        self.model_create()
+        self.model.load_weights(self.checkpoint_path).expect_partial()
+
 
 def euclidean_distance(f):
     return numpy.sqrt(f[0] ** 2 + f[1] ** 2 + f[2] ** 2)
@@ -127,5 +136,7 @@ def process_feature(feature: numpy.array):
     indexes = (0, 1, 7, 9, 11, 13, 15, 19)
     f = numpy.delete(f, indexes, axis=0)
     for index in range(len(f)):
-        f[index] = f[index] / euclidean_distance(f[index])
+        e_d = euclidean_distance(f[index])
+        if e_d != 0:
+            f[index] = f[index] / e_d
     return f.flatten()
