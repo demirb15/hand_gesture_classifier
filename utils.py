@@ -3,7 +3,7 @@ from matplotlib import pyplot as plt
 from sklearn.metrics import classification_report
 
 
-def write_report(y_test, predictions, mlb, file_path, save=False):
+def write_report(y_test, predictions, mlb, file_path, save=True):
     class_report = classification_report(y_test.argmax(axis=1),
                                          predictions.argmax(axis=1),
                                          target_names=[str(x) for x in mlb.classes_])

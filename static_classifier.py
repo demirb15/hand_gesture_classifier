@@ -12,6 +12,7 @@ from sklearn.preprocessing import MultiLabelBinarizer
 
 from hand_detector import HandDetector
 from utils import draw_graph
+from utils import write_report
 
 
 class StaticClassifier:
@@ -86,9 +87,11 @@ class StaticClassifier:
                                  epochs=epochs,
                                  batch_size=batch_size,
                                  callbacks=[self.checkpoint_callback])
+        predictions = self.model.predict(x_test)
         fig_path = os.path.join('outputs', f'{self.model_name}_fig.png')
         history_path = os.path.join('outputs', f'{self.model_name}_report.txt')
         draw_graph(history, epochs, fig_path)
+        write_report(y_test=y_test, predictions=predictions, mlb=self.multi_label_binarizer, file_path=history_path)
         return
 
     def model_create(self):
