@@ -1,2 +1,0 @@
-from gesture_classifiers.static_hand_gesture_classifier import StaticHandGestureClassifier
-from gesture_classifiers.dynamic_hand_gesture_classifier import DynamicHandGestureClassifier
