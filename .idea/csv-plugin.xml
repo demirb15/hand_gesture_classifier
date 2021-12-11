@@ -3,6 +3,13 @@
   <component name="CsvFileAttributes">
     <option name="attributeMap">
       <map>
+        <entry key="/processed_data/static_classifier/crossed_fingers_160947.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/saved_data/dynamic/move_down_70.csv">
           <value>
             <Attribute>
