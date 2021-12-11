@@ -10,6 +10,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/processed_data/static_classifier/crossed_fingers_161008.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/processed_data/static_classifier/live_long_160343.csv">
           <value>
             <Attribute>

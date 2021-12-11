@@ -117,6 +117,22 @@ class StaticClassifier:
         self.feature_vector = process_feature(temp).shape[0]
         self.model_create()
         self.model.load_weights(self.checkpoint_path).expect_partial()
+        return
+
+    def predict(self, features):
+        if features is None:
+            return None
+        predictions = self.model.predict(process_feature(features).reshape(-1, self.feature_vector))
+        index = predictions.argmax(axis=1)
+        predict_vec = numpy.zeros(predictions.shape)
+        predict_vec[0][index] = 1
+        try:
+            transform = self.multi_label_binarizer.inverse_transform(predict_vec)
+            if transform == [()]:
+                return "No Match"
+            return transform
+        except KeyError:
+            return "No Match"
 
 
 def euclidean_distance(f):
