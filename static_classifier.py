@@ -1,8 +1,12 @@
 import math
 import os
+import pickle
 
 import numpy
 from cv2 import cv2
+from keras import Sequential
+from keras.callbacks import ModelCheckpoint
+from keras.layers import Dense
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MultiLabelBinarizer
 
@@ -17,6 +21,16 @@ class StaticClassifier:
     processed_data_path = f'processed_data/{model_name}'
     feature_vector = None
     output_classes = None
+    model: Sequential = None
+    checkpoint_callback: ModelCheckpoint = None
+    checkpoint_path = f'classification_models/{model_name}/cp.ckpt'
+    multilabel_path = f'classification_models/{model_name}/mlb.pkl'
+
+    def __init__(self):
+        try:
+            os.mkdir(f'classification_models/{self.model_name}')
+        except FileExistsError:
+            pass
 
     def transform_samples(self):
         only_files = [f for f in os.listdir(self.training_data_path) if
@@ -54,7 +68,36 @@ class StaticClassifier:
         y_test = self.multi_label_binarizer.transform(y_test)
         self.feature_vector = x_test.shape[1]
         self.output_classes = y_test.shape[1]
+        with open(self.multilabel_path, 'wb') as f:
+            pickle.dump(self.multi_label_binarizer, f)
         return x_train, x_test, y_train, y_test
+
+    def model_fit(self, epochs=100, batch_size=10):
+        x_train, x_test, y_train, y_test = self.load_data()
+        self.model_create()
+        print("[INFO] training network...")
+        history = self.model.fit(x_train, y_train,
+                                 validation_data=(x_test, y_test),
+                                 epochs=epochs,
+                                 batch_size=batch_size,
+                                 callbacks=[self.checkpoint_callback])
+        print(history)
+        return
+
+    def model_create(self):
+        self.model = Sequential()
+        self.model.add(Dense(420, input_shape=(self.feature_vector,),
+                             kernel_initializer='he_uniform', activation='relu'))
+        self.model.add(Dense(210, activation="relu"))
+        self.model.add(Dense(69, activation="relu"))
+        self.model.add(Dense(self.output_classes, activation="softmax"))
+        self.model.compile(loss='categorical_crossentropy',
+                           optimizer='adam',
+                           metrics=["categorical_accuracy"])
+        self.checkpoint_callback = ModelCheckpoint(filepath=self.checkpoint_path,
+                                                   save_weights_only=True,
+                                                   verbose=1)
+        return
 
 
 def euclidean_distance(f):
