@@ -123,13 +123,12 @@ class DynamicClassifier:
         print(report)
         return
 
-    """
     def load_model(self):
         with open(self.multilabel_path, 'rb') as f:
             self.multi_label_binarizer = pickle.load(f)
         self.output_classes = len(self.multi_label_binarizer.classes_)
-        temp = numpy.zeros(63).reshape(-1, 63)
-        self.feature_vector = self.process_feature(temp).shape[0]
+        temp = numpy.zeros(20, 63).reshape(-1, 63)
+        self.feature_vector = self.process_feature(temp)[0].shape[1]
         self.model_create()
         self.model.load_weights(self.checkpoint_path).expect_partial()
         return
@@ -137,7 +136,7 @@ class DynamicClassifier:
     def predict(self, features):
         if features is None:
             return None
-        predictions = self.model.predict(self.process_feature(features).reshape(-1, self.feature_vector))
+        predictions = self.model.predict(self.process_feature(features)[0].reshape(-1, self.feature_vector))
         index = predictions.argmax(axis=1)
         predict_vec = numpy.zeros(predictions.shape)
         predict_vec[0][index] = 1
@@ -148,7 +147,6 @@ class DynamicClassifier:
             return transform
         except KeyError:
             return "No Match"
-    """
 
     @staticmethod
     def process_feature(feature, feature_to_track=8):

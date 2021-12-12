@@ -7,9 +7,9 @@ from static_classifier import StaticClassifier
 
 # test = numpy.loadtxt('processed_data/static_classifier/german_two_155448.csv', delimiter=",")
 if __name__ == '__main__':
-
+    # TODO Make sure model takes seq of 15 frames with 3 values
     dc = DynamicClassifier()
-    dc.model_fit(epochs=10)
+    dc.model_fit(epochs=100)
     exit()
     sc = StaticClassifier()
     sc.load_model()
