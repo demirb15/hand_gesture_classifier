@@ -9,7 +9,7 @@ from static_classifier import StaticClassifier
 if __name__ == '__main__':
 
     dc = DynamicClassifier()
-    dc.load_data()
+    dc.model_fit(epochs=10)
     exit()
     sc = StaticClassifier()
     sc.load_model()

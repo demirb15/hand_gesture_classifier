@@ -89,7 +89,22 @@ class DynamicClassifier:
             pickle.dump(self.multi_label_binarizer, f)
         return x_train, x_test, y_train, y_test
 
-    """
+    def model_create(self):
+        self.model = Sequential()
+        self.model.add(Dense(101, input_shape=(self.feature_vector,),
+                             kernel_initializer='he_uniform', activation='relu'))
+        self.model.add(Dropout(0.2))
+        # self.model.add(Dense(90, activation="relu"))
+        self.model.add(Dense(42, activation="relu"))
+        self.model.add(Dense(self.output_classes, activation="softmax"))
+        self.model.compile(loss='categorical_crossentropy',
+                           optimizer='nadam',
+                           metrics=["categorical_accuracy"])
+        self.checkpoint_callback = ModelCheckpoint(filepath=self.checkpoint_path,
+                                                   save_weights_only=True,
+                                                   verbose=1)
+        return
+
     def model_fit(self, epochs=100, batch_size=10):
         x_train, x_test, y_train, y_test = self.load_data()
         self.model_create()
@@ -108,22 +123,7 @@ class DynamicClassifier:
         print(report)
         return
 
-    def model_create(self):
-        self.model = Sequential()
-        self.model.add(Dense(101, input_shape=(self.feature_vector,),
-                             kernel_initializer='he_uniform', activation='relu'))
-        self.model.add(Dropout(0.2))
-        # self.model.add(Dense(90, activation="relu"))
-        self.model.add(Dense(42, activation="relu"))
-        self.model.add(Dense(self.output_classes, activation="softmax"))
-        self.model.compile(loss='categorical_crossentropy',
-                           optimizer='nadam',
-                           metrics=["categorical_accuracy"])
-        self.checkpoint_callback = ModelCheckpoint(filepath=self.checkpoint_path,
-                                                   save_weights_only=True,
-                                                   verbose=1)
-        return
-
+    """
     def load_model(self):
         with open(self.multilabel_path, 'rb') as f:
             self.multi_label_binarizer = pickle.load(f)
