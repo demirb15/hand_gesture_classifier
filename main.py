@@ -1,16 +1,17 @@
 import cv2
 import numpy
 
+from dynamic_classifier import DynamicClassifier
 from hand_detector import HandDetector
 from static_classifier import StaticClassifier
 
 # test = numpy.loadtxt('processed_data/static_classifier/german_two_155448.csv', delimiter=",")
 if __name__ == '__main__':
 
-    sc = StaticClassifier()
-    sc.model_fit(epochs=300)
+    dc = DynamicClassifier()
+    dc.transform_samples()
     exit()
-    sc.load_model()
+    dc.load_model()
     capture = cv2.VideoCapture(0)
     cv2.namedWindow("DISPLAY", cv2.WINDOW_FULLSCREEN)
     detector = HandDetector()

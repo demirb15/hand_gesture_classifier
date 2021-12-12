@@ -4,6 +4,7 @@ import pickle
 
 import numpy
 from cv2 import cv2
+from numpy import ndarray
 from tensorflow.keras import Sequential
 from tensorflow.keras.callbacks import ModelCheckpoint
 from tensorflow.keras.layers import Dense, Dropout
@@ -44,17 +45,26 @@ class DynamicClassifier:
         for each in only_files:
             count = 0
             temp_file = os.path.join(self.training_data_path, each)
-            frame = cv2.imread(temp_file, cv2.IMREAD_COLOR)
-            data = self.h_detector.detect_hands(frame, True)
-            while count < 10 and data is None:
+            cap = cv2.VideoCapture(temp_file)
+            frames = []
+            while cap.isOpened():
+                ret, frame = cap.read()
+                if not ret:
+                    break
                 data = self.h_detector.detect_hands(frame, True)
-                count += 1
-            if data is None:
-                continue
+                while count < 5 and data is None:
+                    data = self.h_detector.detect_hands(frame, True)
+                    count = count + 1
+                if data is None:
+                    continue
+                frames.append(data.flatten())
+            cap.release()
+            np_frames = numpy.array(frames).reshape(-1, 63)
             base_name = each[:-4]
             path = os.path.join(self.processed_data_path, base_name + '.csv')
-            numpy.savetxt(path, data, delimiter=",")
+            numpy.savetxt(path, np_frames, delimiter=",")
 
+    """
     def load_data(self):
         only_files = [f for f in os.listdir(self.processed_data_path) if
                       os.path.isfile(os.path.join(self.processed_data_path, f))]
@@ -139,20 +149,27 @@ class DynamicClassifier:
 
     @staticmethod
     def process_feature(feature: numpy.array):
-        """
-        Process feature vector
-        :param feature: feature vector (21,3)
-        :return: processed feature vector
-        """
-        f = feature.reshape(21, 3)
-        # normalize to wrist, hence now each point a vector
-        f = f - f[0]
-        # blacklist
-        # indexes = 0
-        indexes = (0, 1, 7, 9, 11, 13, 15, 19)
-        f = numpy.delete(f, indexes, axis=0)
-        for index in range(len(f)):
-            # do nothing
-            pass
-        # f = numpy.abs(f)
-        return f.flatten()
+        """"""
+    Process
+    feature
+    vector
+    :param
+    feature: feature
+    vector(21, 3)
+    :return: processed
+    feature
+    vector"""
+    """
+    f = feature.reshape(21, 3)
+    # normalize to wrist, hence now each point a vector
+    f = f - f[0]
+    # blacklist
+    # indexes = 0
+    indexes = (0, 1, 7, 9, 11, 13, 15, 19)
+    f = numpy.delete(f, indexes, axis=0)
+    for index in range(len(f)):
+        # do nothing
+        pass
+    # f = numpy.abs(f)
+    return f.flatten()
+"""
