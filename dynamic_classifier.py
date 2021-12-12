@@ -4,9 +4,9 @@ import pickle
 
 import numpy
 from cv2 import cv2
-from keras import Sequential
-from keras.callbacks import ModelCheckpoint
-from keras.layers import Dense
+from tensorflow.keras import Sequential
+from tensorflow.keras.callbacks import ModelCheckpoint
+from tensorflow.keras.layers import Dense, Dropout
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MultiLabelBinarizer
 
@@ -98,13 +98,12 @@ class DynamicClassifier:
 
     def model_create(self):
         self.model = Sequential()
-        k_initializer = initializers.he_uniform
         self.model.add(Dense(101, input_shape=(self.feature_vector,),
-                             kernel_initializer=k_initializer, activation='relu'))
+                             kernel_initializer='he_uniform', activation='relu'))
         self.model.add(Dropout(0.2))
         # self.model.add(Dense(90, activation="relu"))
-        self.model.add(Dense(42, kernel_initializer=k_initializer, activation="relu"))
-        self.model.add(Dense(self.output_classes, kernel_initializer=k_initializer, activation="softmax"))
+        self.model.add(Dense(42, activation="relu"))
+        self.model.add(Dense(self.output_classes, activation="softmax"))
         self.model.compile(loss='categorical_crossentropy',
                            optimizer='nadam',
                            metrics=["categorical_accuracy"])
