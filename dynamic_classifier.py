@@ -64,7 +64,6 @@ class DynamicClassifier:
             path = os.path.join(self.processed_data_path, base_name + '.csv')
             numpy.savetxt(path, np_frames, delimiter=",")
 
-    """
     def load_data(self):
         only_files = [f for f in os.listdir(self.processed_data_path) if
                       os.path.isfile(os.path.join(self.processed_data_path, f))]
@@ -73,9 +72,11 @@ class DynamicClassifier:
         for each in only_files:
             path = os.path.join(self.processed_data_path, each)
             data = numpy.loadtxt(path, delimiter=",")
-            samples.append(self.process_feature(data))
-            expected.append(each[:-11])
-
+            # track tip of index finger
+            processed_data_list = self.process_feature(data, feature_to_track=8)
+            for processed_data in processed_data_list:
+                samples.append(processed_data)
+                expected.append(each[:-12])
         data_x = numpy.array(samples)
         data_x = data_x.reshape(-1, data_x.shape[1])
         data_y = numpy.array(expected).reshape(-1, 1)
@@ -88,6 +89,7 @@ class DynamicClassifier:
             pickle.dump(self.multi_label_binarizer, f)
         return x_train, x_test, y_train, y_test
 
+    """
     def model_fit(self, epochs=100, batch_size=10):
         x_train, x_test, y_train, y_test = self.load_data()
         self.model_create()
@@ -146,30 +148,26 @@ class DynamicClassifier:
             return transform
         except KeyError:
             return "No Match"
+    """
 
     @staticmethod
-    def process_feature(feature: numpy.array):
-        """"""
-    Process
-    feature
-    vector
-    :param
-    feature: feature
-    vector(21, 3)
-    :return: processed
-    feature
-    vector"""
-    """
-    f = feature.reshape(21, 3)
-    # normalize to wrist, hence now each point a vector
-    f = f - f[0]
-    # blacklist
-    # indexes = 0
-    indexes = (0, 1, 7, 9, 11, 13, 15, 19)
-    f = numpy.delete(f, indexes, axis=0)
-    for index in range(len(f)):
-        # do nothing
-        pass
-    # f = numpy.abs(f)
-    return f.flatten()
-"""
+    def process_feature(feature, feature_to_track=8):
+        """
+        :param feature: seq of feature vector (21,3)
+        :param feature_to_track: feature that will be tracked
+        :return:
+        """
+        f = feature.reshape(-1, 21, 3)
+        feature_seq = []
+        for index in range(0, len(f) - 18, 5):
+            extracted = f[index:index + 15, feature_to_track, :] - f[index + 1:index + 16, feature_to_track, :]
+            temp_seq = []
+            for each in extracted:
+                e_d = euclidean_distance(each)
+                temp_seq.append(each / e_d)
+            feature_seq.append(numpy.array(temp_seq).flatten())
+        return feature_seq
+
+
+def euclidean_distance(f):
+    return numpy.sqrt(f[0] ** 2 + f[1] ** 2 + f[2] ** 2)

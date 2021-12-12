@@ -9,9 +9,10 @@ from static_classifier import StaticClassifier
 if __name__ == '__main__':
 
     dc = DynamicClassifier()
-    dc.transform_samples()
+    dc.load_data()
     exit()
-    dc.load_model()
+    sc = StaticClassifier()
+    sc.load_model()
     capture = cv2.VideoCapture(0)
     cv2.namedWindow("DISPLAY", cv2.WINDOW_FULLSCREEN)
     detector = HandDetector()
