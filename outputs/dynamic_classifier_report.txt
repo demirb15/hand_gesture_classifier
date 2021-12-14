@@ -1,13 +1,13 @@
               precision    recall  f1-score   support
 
-    arc_left       0.38      0.83      0.53         6
-   arc_right       0.86      0.75      0.80        24
-   move_down       0.92      0.88      0.90        25
-   move_left       0.94      0.89      0.92        38
-  move_right       0.81      0.96      0.88        27
-     move_up       0.76      0.83      0.79        23
-   no_motion       0.95      0.68      0.79        28
+    arc_left       0.71      0.83      0.77         6
+   arc_right       0.69      0.75      0.72        24
+   move_down       0.92      0.92      0.92        25
+   move_left       0.97      0.95      0.96        38
+  move_right       0.89      0.63      0.74        27
+     move_up       0.84      0.91      0.87        23
+   no_motion       0.81      0.93      0.87        28
 
-    accuracy                           0.84       171
-   macro avg       0.80      0.83      0.80       171
-weighted avg       0.86      0.84      0.84       171
+    accuracy                           0.85       171
+   macro avg       0.84      0.85      0.84       171
+weighted avg       0.86      0.85      0.85       171

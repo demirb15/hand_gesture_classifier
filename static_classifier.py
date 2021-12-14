@@ -86,6 +86,7 @@ class StaticClassifier:
                                  epochs=epochs,
                                  batch_size=batch_size,
                                  callbacks=[self.checkpoint_callback])
+        print(min(history.history['val_loss']))
         predictions = self.model.predict(x_test)
         fig_path = os.path.join('outputs', f'{self.model_name}_fig.png')
         history_path = os.path.join('outputs', f'{self.model_name}_report.txt')
@@ -144,6 +145,9 @@ class StaticClassifier:
         :param feature: feature vector (21,3)
         :return: processed feature vector
         """
+        demo = True
+        if demo:
+            return StaticClassifier.demo_process_feature_2_0(feature)
         f = feature.reshape(21, 3)
         # normalize to wrist, hence now each point a vector
         f = f - f[0]
@@ -156,6 +160,54 @@ class StaticClassifier:
             if e_d != 0:
                 f[index] = f[index] / e_d
         # f = numpy.abs(f)
+        return f.flatten()
+
+    @staticmethod
+    def demo_process_feature(feature: numpy.array):
+        f = feature.reshape(21, 3)
+        zeros = numpy.zeros(3)
+        f_map = [zeros,
+                 f[0], f[1], f[2], f[3],
+                 f[0], f[5], f[6], f[7],
+                 f[0], f[9], f[10], f[11],
+                 f[0], f[13], f[14], f[15],
+                 f[0], f[17], f[18], f[19]]
+        f = f - f_map
+        i = 7
+        indexes = (0, i, i + 4, i + 8, i + 12)
+        f = numpy.delete(f, indexes, axis=0)
+        for index in range(len(f)):
+            e_d = euclidean_distance(f[index])
+            if e_d != 0:
+                f[index] = f[index] / e_d
+        return f.flatten()
+
+    @staticmethod
+    def demo_process_feature_2_0(feature: numpy.array):
+        f = feature.reshape(21, 3)
+        zeros = numpy.zeros(3)
+        f_map = [zeros,
+                 f[0], f[1], zeros, f[3],
+                 f[0], f[5], zeros, f[6],
+                 f[0], f[9], zeros, f[10],
+                 f[0], f[13], zeros, f[15],
+                 f[0], f[17], zeros, f[18]]
+        """
+        0
+        1,2,3,4,
+        5,6,7,8,
+        9,10,11,12,
+        13,14,15,16,
+        17,18,19,20,
+        """
+        f = f - f_map
+        i = 7
+        indexes = (0, i, i + 4, i + 8, i + 12)
+        f = numpy.delete(f, indexes, axis=0)
+        for index in range(len(f)):
+            e_d = euclidean_distance(f[index])
+            if e_d != 0:
+                f[index] = f[index] / e_d
         return f.flatten()
 
 
