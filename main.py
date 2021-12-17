@@ -10,9 +10,8 @@ from static_classifier import StaticClassifier
 if __name__ == '__main__':
     dc = DynamicClassifier()
     sc = StaticClassifier()
-    # dc.model_fit(epochs=40)
-    sc.model_fit(300)
-    exit()
+    # dc.model_fit(300)
+    # sc.model_fit(300)
     dc.load_model()
     sc.load_model()
     capture = cv2.VideoCapture(0)
@@ -36,12 +35,15 @@ if __name__ == '__main__':
             if f is not None:
                 cache.append(f)
             prediction = sc.predict(f)
-            print('static:: ', prediction, end=' ')
+            if prediction is not None:
+                print('static:: ', prediction, end=' ')
             if len(cache) > 20:
                 np_cache = numpy.array(cache)
                 d_prediction = dc.predict(np_cache)
-                print('dynamic:: ', d_prediction, end='')
+                if d_prediction is not None:
+                    print('dynamic:: ', d_prediction, end='')
                 cache = cache[5:]
-            print('')
+            if prediction is not None:
+                print('')
         cv2.imshow("DISPLAY", frame)
     capture.release()
