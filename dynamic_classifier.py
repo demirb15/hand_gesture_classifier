@@ -63,6 +63,9 @@ class DynamicClassifier:
             np_frames = numpy.array(frames).reshape(-1, 63)
             base_name = each[:-5]
             path = os.path.join(self.processed_data_path, base_name + '.csv')
+            if len(np_frames) < 20:
+                continue
+            print('i', end='')
             numpy.savetxt(path, np_frames, delimiter=",")
 
     def load_data(self):
@@ -72,15 +75,19 @@ class DynamicClassifier:
         expected = []
         for each in only_files:
             path = os.path.join(self.processed_data_path, each)
-            data = numpy.loadtxt(path, delimiter=",")
+            try:
+                data = numpy.loadtxt(path, delimiter=",")
+            except UserWarning:
+                print(each)
+                continue
             # track tip of index finger
-            processed_data_list = self.process_feature(data, feature_to_track=8)
+            processed_data_list = process_feature(data)
             for processed_data in processed_data_list:
                 samples.append(processed_data)
                 expected.append(each[:-11])
         data_x = numpy.array(samples)
         data_y = numpy.array(expected).reshape(-1, 1)
-        x_train, x_test, y_train, y_test = train_test_split(data_x, data_y, test_size=0.33, random_state=42)
+        x_train, x_test, y_train, y_test = train_test_split(data_x, data_y, test_size=0.33, random_state=40)
         y_train = self.multi_label_binarizer.fit_transform(y_train)
         y_test = self.multi_label_binarizer.transform(y_test)
         self.feature_vector = get_feature_shape()
@@ -137,7 +144,7 @@ class DynamicClassifier:
         if features is None:
             return None
         s1, s2 = get_feature_shape()
-        processed_features = self.process_feature(features)[0].reshape(-1, s1, s2)
+        processed_features = process_feature(features)[0].reshape(-1, s1, s2)
         predictions = self.model.predict(processed_features)
         index = predictions.argmax(axis=1)
         predict_vec = numpy.zeros(predictions.shape)
@@ -150,31 +157,27 @@ class DynamicClassifier:
         except KeyError:
             return "No Match"
 
-    @staticmethod
-    def process_feature(feature, feature_to_track=8):
-        """
-        :param feature: seq of feature vector (21,3)
-        :param feature_to_track: feature that will be tracked
-        :return:
-        """
-        f = feature.reshape(-1, 21, 3)
-        feature_seq = []
-        for index in range(0, len(f) - 18, 5):
-            extracted = f[index:index + 15, feature_to_track, :] - f[index + 1:index + 16, feature_to_track, :]
-            v1 = f[index:index + 15, 5, :] - f[index:index + 15, 0, :]
-            v2 = f[index:index + 15, 17, :] - f[index:index + 15, 0, :]
-            extracted_norm = [each / (1 if euclidean_distance(each) == 0 else euclidean_distance(each)) for each in
-                              extracted]
-            cross = [numpy.cross(each1, each2) for each1, each2 in zip(v1, v2)]
-            cross_norm = [each / (1 if euclidean_distance(each) == 0 else euclidean_distance(each)) for each in cross]
-            features = numpy.concatenate((extracted_norm, cross_norm), axis=1)
-            feature_seq.append(features)
-        return numpy.array(feature_seq)
+
+def process_feature(feature):
+    """
+    :param feature: seq of feature vector (21,3)
+    :return:
+    """
+    f = feature.reshape(-1, 21, 3)
+    feature_seq = []
+    for index in range(0, len(f) - 20, 5):
+        f_to_track = [0, 4, 8, 12, 16, 20]
+        extracted = f[index:index + 15, f_to_track, :] - f[index + 1:index + 16, f_to_track, :]
+        norms = numpy.linalg.norm(extracted, axis=2).reshape((15, len(f_to_track), 1))
+        processed = extracted / norms
+        processed = processed.reshape((15, len(f_to_track) * 3))
+        feature_seq.append(processed)
+    return numpy.array(feature_seq)
 
 
 def get_feature_shape():
-    np_ones = numpy.ones((30, 63))
-    f = numpy.array(DynamicClassifier.process_feature(np_ones))
+    np_rand = numpy.random.random((30, 63))
+    f = numpy.array(process_feature(np_rand))
     return f[0].shape
 
 

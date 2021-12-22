@@ -6,12 +6,16 @@ from dynamic_classifier import DynamicClassifier
 from hand_detector import HandDetector
 from static_classifier import StaticClassifier
 
-# test = numpy.loadtxt('processed_data/static_classifier/german_two_155448.csv', delimiter=",")
+# TODO Change lstm to dense, get 95% accuracy
+# TODO add lstm after these two network and capture motion with output from these two network
+
+
 if __name__ == '__main__':
     dc = DynamicClassifier()
     sc = StaticClassifier()
-    # dc.model_fit(300)
-    # sc.model_fit(300)
+    dc.model_fit(100)
+    sc.model_fit(300)
+    exit()
     dc.load_model()
     sc.load_model()
     capture = cv2.VideoCapture(0)

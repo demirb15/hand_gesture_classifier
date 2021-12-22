@@ -98,8 +98,8 @@ class StaticClassifier:
 
     def model_create(self):
         self.model = Sequential()
-        k_initializer = initializers.he_uniform
-        self.model.add(Dense(101, input_shape=(self.feature_vector,),
+        k_initializer = initializers.he_normal
+        self.model.add(Dense(73, input_shape=(self.feature_vector,),
                              kernel_initializer=k_initializer, activation='relu'))
         self.model.add(Dropout(0.2))
         # self.model.add(Dense(90, activation="relu"))
@@ -176,10 +176,8 @@ class StaticClassifier:
         i = 7
         indexes = (0, i, i + 4, i + 8, i + 12)
         f = numpy.delete(f, indexes, axis=0)
-        for index in range(len(f)):
-            e_d = euclidean_distance(f[index])
-            if e_d != 0:
-                f[index] = f[index] / e_d
+        norms = numpy.linalg.norm(f, axis=1).reshape(len(f), 1)
+        f = f / norms
         return f.flatten()
 
     @staticmethod
@@ -204,10 +202,8 @@ class StaticClassifier:
         i = 7
         indexes = (0, i, i + 4, i + 8, i + 12)
         f = numpy.delete(f, indexes, axis=0)
-        for index in range(len(f)):
-            e_d = euclidean_distance(f[index])
-            if e_d != 0:
-                f[index] = f[index] / e_d
+        norms = numpy.linalg.norm(f, axis=1).reshape(len(f), 1)
+        f = f / norms
         return f.flatten()
 
 
