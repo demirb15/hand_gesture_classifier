@@ -147,7 +147,7 @@ class StaticClassifier:
         """
         demo = True
         if demo:
-            return StaticClassifier.demo_process_feature_2_0(feature)
+            return demo_process_feature_3_0(feature)
         f = feature.reshape(21, 3)
         # normalize to wrist, hence now each point a vector
         f = f - f[0]
@@ -155,57 +155,67 @@ class StaticClassifier:
         # indexes = 0
         indexes = (0, 1, 7, 9, 11, 13, 15, 19)
         f = numpy.delete(f, indexes, axis=0)
-        for index in range(len(f)):
-            e_d = euclidean_distance(f[index])
-            if e_d != 0:
-                f[index] = f[index] / e_d
-        # f = numpy.abs(f)
-        return f.flatten()
-
-    @staticmethod
-    def demo_process_feature(feature: numpy.array):
-        f = feature.reshape(21, 3)
-        zeros = numpy.zeros(3)
-        f_map = [zeros,
-                 f[0], f[1], f[2], f[3],
-                 f[0], f[5], f[6], f[7],
-                 f[0], f[9], f[10], f[11],
-                 f[0], f[13], f[14], f[15],
-                 f[0], f[17], f[18], f[19]]
-        f = f - f_map
-        i = 7
-        indexes = (0, i, i + 4, i + 8, i + 12)
-        f = numpy.delete(f, indexes, axis=0)
-        norms = numpy.linalg.norm(f, axis=1).reshape(len(f), 1)
-        f = f / norms
-        return f.flatten()
-
-    @staticmethod
-    def demo_process_feature_2_0(feature: numpy.array):
-        f = feature.reshape(21, 3)
-        zeros = numpy.zeros(3)
-        f_map = [zeros,
-                 f[0], f[1], zeros, f[3],
-                 f[0], f[5], zeros, f[6],
-                 f[0], f[9], zeros, f[10],
-                 f[0], f[13], zeros, f[15],
-                 f[0], f[17], zeros, f[18]]
-        """
-        0
-        1,2,3,4,
-        5,6,7,8,
-        9,10,11,12,
-        13,14,15,16,
-        17,18,19,20,
-        """
-        f = f - f_map
-        i = 7
-        indexes = (0, i, i + 4, i + 8, i + 12)
-        f = numpy.delete(f, indexes, axis=0)
         norms = numpy.linalg.norm(f, axis=1).reshape(len(f), 1)
         f = f / norms
         return f.flatten()
 
 
-def euclidean_distance(f):
-    return numpy.sqrt(f[0] ** 2 + f[1] ** 2 + f[2] ** 2)
+def demo_process_feature(feature: numpy.array):
+    f = feature.reshape(21, 3)
+    zeros = numpy.zeros(3)
+    f_map = [zeros,
+             f[0], f[1], f[2], f[3],
+             f[0], f[5], f[6], f[7],
+             f[0], f[9], f[10], f[11],
+             f[0], f[13], f[14], f[15],
+             f[0], f[17], f[18], f[19]]
+    f = f - f_map
+    i = 7
+    indexes = (0, i, i + 4, i + 8, i + 12)
+    f = numpy.delete(f, indexes, axis=0)
+    norms = numpy.linalg.norm(f, axis=1).reshape(len(f), 1)
+    f = f / norms
+    return f.flatten()
+
+
+def demo_process_feature_2_0(feature: numpy.array):
+    f = feature.reshape(21, 3)
+    zeros = numpy.zeros(3)
+    f_map = [zeros,
+             f[0], f[1], zeros, f[3],
+             f[0], f[5], zeros, f[6],
+             f[0], f[9], zeros, f[10],
+             f[0], f[13], zeros, f[15],
+             f[0], f[17], zeros, f[18]]
+    """
+    0
+    1,2,3,4,
+    5,6,7,8,
+    9,10,11,12,
+    13,14,15,16,
+    17,18,19,20,
+    """
+    f = f - f_map
+    i = 7
+    indexes = (0, i, i + 4, i + 8, i + 12)
+    f = numpy.delete(f, indexes, axis=0)
+    norms = numpy.linalg.norm(f, axis=1).reshape(len(f), 1)
+    f = f / norms
+    return f.flatten()
+
+
+def demo_process_feature_3_0(feature: numpy.array):
+    f = feature.reshape(21, 3)
+    zeros = numpy.full(3, 42)
+    f_map = numpy.array([zeros,
+                         zeros, f[0], zeros, f[2],
+                         f[0], f[5], zeros, f[6],
+                         f[0], f[9], zeros, f[10],
+                         f[0], f[13], zeros, f[14],
+                         f[0], f[17], zeros, f[18]])
+    f = f - f_map
+    indexes = numpy.unique(numpy.where(numpy.array(f_map) == zeros))
+    f = numpy.delete(f, indexes, axis=0)
+    norms = numpy.linalg.norm(f, axis=1).reshape(len(f), 1) + 1e-19
+    f = f / norms
+    return f.flatten()
