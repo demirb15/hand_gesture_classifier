@@ -29,6 +29,7 @@ class DynamicClassifier:
     checkpoint_callback: ModelCheckpoint = None
     checkpoint_path = f'classification_models/{model_name}/cp.ckpt'
     multilabel_path = f'classification_models/{model_name}/mlb.pkl'
+    s1, s2 = None, None
 
     def __init__(self):
         try:
@@ -143,8 +144,9 @@ class DynamicClassifier:
     def predict(self, features):
         if features is None:
             return None
-        s1, s2 = get_feature_shape()
-        processed_features = process_feature(features)[0].reshape(-1, s1, s2)
+        if self.s1 is None or self.s2 is None:
+            self.s1, self.s2 = get_feature_shape()
+        processed_features = process_feature(features).reshape((-1, self.s1, self.s2))
         predictions = self.model.predict(processed_features)
         index = predictions.argmax(axis=1)
         predict_vec = numpy.zeros(predictions.shape)
@@ -153,7 +155,7 @@ class DynamicClassifier:
             transform = self.multi_label_binarizer.inverse_transform(predict_vec)
             if transform == [()]:
                 return "No Match"
-            return transform
+            return transform[0][0]
         except KeyError:
             return "No Match"
 

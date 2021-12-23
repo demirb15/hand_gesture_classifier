@@ -134,7 +134,7 @@ class StaticClassifier:
             transform = self.multi_label_binarizer.inverse_transform(predict_vec)
             if transform == [()]:
                 return "No Match"
-            return transform
+            return transform[0][0]
         except KeyError:
             return "No Match"
 
