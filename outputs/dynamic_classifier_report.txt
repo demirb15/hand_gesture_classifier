@@ -1,16 +1,15 @@
               precision    recall  f1-score   support
 
-  close_grab       1.00      1.00      1.00        32
-   open_grab       1.00      1.00      1.00        21
-  swipe_down       1.00      1.00      1.00        20
-  swipe_left       1.00      1.00      1.00        12
- swipe_right       1.00      1.00      1.00        19
-    swipe_up       1.00      1.00      1.00        18
-         tab       1.00      1.00      1.00        27
- three_pinch       0.78      1.00      0.88         7
-   two_pinch       1.00      0.50      0.67         4
-        wave       1.00      1.00      1.00        19
+  close_grab       0.92      0.98      0.95        49
+   open_grab       0.96      0.90      0.93        29
+  swipe_down       1.00      0.96      0.98        28
+  swipe_left       1.00      0.95      0.97        20
+ swipe_right       1.00      1.00      1.00        27
+    swipe_up       1.00      1.00      1.00        20
+         tab       0.94      1.00      0.97        29
+   two_pinch       0.91      0.88      0.89        24
+        wave       1.00      1.00      1.00        23
 
-    accuracy                           0.99       179
-   macro avg       0.98      0.95      0.95       179
-weighted avg       0.99      0.99      0.99       179
+    accuracy                           0.96       249
+   macro avg       0.97      0.96      0.97       249
+weighted avg       0.96      0.96      0.96       249

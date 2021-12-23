@@ -1,7 +1,6 @@
 import mediapipe
 import numpy
-from cv2 import cv2
-
+import cv2
 
 class HandDetector:
     solutions_hands = mediapipe.solutions.hands
@@ -33,5 +32,5 @@ def formalize(hand_landmarks):
                 single_hand_arr.append(temp_arr)
             single_hand_arr = numpy.asarray(single_hand_arr).flatten()
             multi_hand_arr.append(single_hand_arr)
-        return numpy.array(multi_hand_arr)
+        return numpy.array(multi_hand_arr, dtype=numpy.float64)
     return None

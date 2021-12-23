@@ -1,14 +1,10 @@
+import cv2
 import os
 import pickle
-
 import numpy
-import tensorflow.keras.initializers as initializers
-import tensorflow.keras.activations as activations
-import tensorflow.keras.optimizers as optimizers
-from cv2 import cv2
 from tensorflow.keras import Sequential
 from tensorflow.keras.callbacks import ModelCheckpoint
-from tensorflow.keras.layers import Dense, Dropout, LSTM, Conv1D
+from tensorflow.keras.layers import Dense, LSTM
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MultiLabelBinarizer
 
@@ -29,8 +25,11 @@ class DynamicClassifier:
     checkpoint_callback: ModelCheckpoint = None
     checkpoint_path = f'classification_models/{model_name}/cp.ckpt'
     multilabel_path = f'classification_models/{model_name}/mlb.pkl'
+    s1, s2 = None, None
 
     def __init__(self):
+        if self.s1 is None or self.s2 is None:
+            self.s1, self.s2 = get_feature_shape()
         try:
             os.mkdir(f'classification_models/{self.model_name}')
         except FileExistsError:
@@ -100,8 +99,6 @@ class DynamicClassifier:
         self.model = Sequential()
         self.model.add(LSTM(73, input_shape=self.feature_vector,
                             dropout=0.2,
-                            # kernel_initializer='glorot_uniform',
-                            # activation='tanh',
                             return_sequences=True))
         self.model.add(LSTM(23))
         self.model.add(Dense(self.output_classes, activation="softmax"))
@@ -143,8 +140,7 @@ class DynamicClassifier:
     def predict(self, features):
         if features is None:
             return None
-        s1, s2 = get_feature_shape()
-        processed_features = process_feature(features)[0].reshape(-1, s1, s2)
+        processed_features = process_feature(features).reshape((-1, self.s1, self.s2))
         predictions = self.model.predict(processed_features)
         index = predictions.argmax(axis=1)
         predict_vec = numpy.zeros(predictions.shape)
@@ -165,12 +161,13 @@ def process_feature(feature):
     """
     f = feature.reshape(-1, 21, 3)
     feature_seq = []
-    for index in range(0, len(f) - 20, 5):
+    frame_len = 12
+    for index in range(0, len(f) - frame_len, 5):
         f_to_track = [0, 4, 8, 12, 16, 20]
-        extracted = f[index:index + 15, f_to_track, :] - f[index + 1:index + 16, f_to_track, :]
-        norms = numpy.linalg.norm(extracted, axis=2).reshape((15, len(f_to_track), 1))
+        extracted = f[index:index + frame_len, f_to_track, :] - f[index + 1:index + 1 + frame_len, f_to_track, :]
+        norms = numpy.linalg.norm(extracted, axis=2).reshape((frame_len, len(f_to_track), 1))
         processed = extracted / norms
-        processed = processed.reshape((15, len(f_to_track) * 3))
+        processed = processed.reshape((frame_len, len(f_to_track) * 3))
         feature_seq.append(processed)
     return numpy.array(feature_seq)
 
@@ -179,7 +176,3 @@ def get_feature_shape():
     np_rand = numpy.random.random((30, 63))
     f = numpy.array(process_feature(np_rand))
     return f[0].shape
-
-
-def euclidean_distance(f):
-    return numpy.sqrt(numpy.sum(f * f))

@@ -5,12 +5,16 @@ from dynamic_classifier import DynamicClassifier
 from hand_detector import HandDetector
 from static_classifier import StaticClassifier
 
+# TODO make predict api
+# TODO make mobile app
+# TODO contact prof on saturday for final report
+
 if __name__ == '__main__':
     dc = DynamicClassifier()
     sc = StaticClassifier()
-    # dc.model_fit(100)
+    dc.model_fit(100)
     # sc.model_fit(300)
-    # exit()
+    exit()
     dc.load_model()
     sc.load_model()
     capture = cv2.VideoCapture(0)
@@ -41,8 +45,8 @@ if __name__ == '__main__':
                     cache.clear()
             prediction = sc.predict(f)
             if prediction is not None:
-                print('static:: ', prediction[0][0], end=' ')
-                if prediction[0][0] == 'raised_fist':
+                print('static:: ', prediction, end=' ')
+                if prediction == 'raised_fist':
                     cache.clear()
 
             if len(cache) > 20:

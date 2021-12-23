@@ -1,7 +1,6 @@
 import os
 import pickle
 import numpy
-from cv2 import cv2
 from tensorflow.keras import Sequential
 from tensorflow.keras import initializers
 from tensorflow.keras.callbacks import ModelCheckpoint
@@ -12,6 +11,7 @@ from sklearn.preprocessing import MultiLabelBinarizer
 from hand_detector import HandDetector
 from utils import draw_graph
 from utils import write_report
+from cv2 import imread, IMREAD_COLOR
 
 
 class StaticClassifier:
@@ -43,7 +43,7 @@ class StaticClassifier:
         for each in only_files:
             count = 0
             temp_file = os.path.join(self.training_data_path, each)
-            frame = cv2.imread(temp_file, cv2.IMREAD_COLOR)
+            frame = imread(temp_file, IMREAD_COLOR)
             data = self.h_detector.detect_hands(frame, True)
             while count < 10 and data is None:
                 data = self.h_detector.detect_hands(frame, True)
@@ -134,7 +134,7 @@ class StaticClassifier:
             transform = self.multi_label_binarizer.inverse_transform(predict_vec)
             if transform == [()]:
                 return "No Match"
-            return transform
+            return transform[0][0]
         except KeyError:
             return "No Match"
 
