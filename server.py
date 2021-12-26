@@ -28,6 +28,7 @@ class ClassificationServer:
         self.d_classifier.load_model()
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, self.BUFFER_SIZE)
+        self.server.settimeout(10)
         self.app = app
 
     def run_server(self):
@@ -90,7 +91,11 @@ class ClassificationServer:
                                     'dynamic': dc_prediction
                                 }
                             ).encode(encoding='UTF-8')
-                            communication_socket.send(res)
+                            try:
+                                communication_socket.send(res)
+                            except BrokenPipeError:
+                                communication_socket.close()
+                                break
                             cache.pop(0)
             communication_socket.close()
         except ConnectionResetError:

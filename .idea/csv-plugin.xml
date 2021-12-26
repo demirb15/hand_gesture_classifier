@@ -171,20 +171,6 @@
             </Attribute>
           </value>
         </entry>
-        <entry key="/processed_data/dynamic_classifier/three_pinch_170325.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="/processed_data/dynamic_classifier/three_pinch_170329.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
         <entry key="/processed_data/dynamic_classifier/two_pinch_170528.csv">
           <value>
             <Attribute>

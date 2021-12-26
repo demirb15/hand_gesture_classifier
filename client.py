@@ -1,18 +1,31 @@
+import time
+
+from connection_status import Connection
+import ast
 import base64
 import socket
+import threading
 import imutils
 import cv2
 import requests
-from connection_status import Connection
 
 HOST = socket.gethostbyname(socket.getfqdn())
 PORT = 6969
 BUFFER_SIZE = 65536
 
+CAMERA_CAPTURE_FPS = 15
+CAMERA_CAPTURE_WIDTH = 1280
+CAMERA_CAPTURE_HEIGHT = 720
+
 
 def listener(client: socket.socket):
     while message := client.recv(BUFFER_SIZE):
-        print(message)
+        decoded_message = message.decode(encoding='UTF-8')
+        dict_message = ast.literal_eval(decoded_message)
+        static_c = dict_message['static']
+        dynamic_c = dict_message['dynamic']
+        print(static_c)
+        print(dynamic_c)
 
 
 def main():
@@ -23,8 +36,16 @@ def main():
         client.connect((HOST, PORT))
     else:
         return
+    x_thread = threading.Thread(target=listener, args=(client,), daemon=True)
+    x_thread.start()
     capture = cv2.VideoCapture(0)
+    capture.set(3, 640)
+    capture.set(4, 480)
+    capture.set(cv2.CAP_PROP_FPS, CAMERA_CAPTURE_FPS)
     cv2.namedWindow("SENDING VIDEO")
+    start_time = time.time()
+    frame_counter = 0
+    fps = 0
     while capture.isOpened():
         ret, frame = capture.read()
         if not ret:
@@ -34,6 +55,12 @@ def main():
         if key is ord('q'):
             cv2.destroyWindow("SENDING VIDEO")
             break
+        if time.time() - start_time >= 1:
+            fps = frame_counter
+            frame_counter = 0
+            start_time = time.time()
+        cv2.putText(frame, "FPS: " + str(fps), (20, 40), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 1, cv2.LINE_AA)
+        frame_counter += 1
         cv2.imshow("SENDING VIDEO", frame)
         # process img
         frame = imutils.resize(frame, width=400)
