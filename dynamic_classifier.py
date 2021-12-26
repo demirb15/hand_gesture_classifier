@@ -144,12 +144,16 @@ class DynamicClassifier:
         predictions = self.model.predict(processed_features)
         index = predictions.argmax(axis=1)
         predict_vec = numpy.zeros(predictions.shape)
-        predict_vec[0][index] = 1
+        confidence = []
+        for e, i in enumerate(index):
+            predict_vec[e][i] = 1
+            confidence.append(predictions[e][i])
         try:
             transform = self.multi_label_binarizer.inverse_transform(predict_vec)
             if transform == [()]:
                 return "No Match"
-            return transform
+            ret = [[transform[i][0], e] for i, e in enumerate(confidence)]
+            return ret
         except KeyError:
             return "No Match"
 

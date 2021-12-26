@@ -90,7 +90,11 @@ class ClassificationServer:
                                     'dynamic': dc_prediction
                                 }
                             ).encode(encoding='UTF-8')
-                            communication_socket.send(res)
+                            try:
+                                communication_socket.send(res)
+                            except BrokenPipeError:
+                                communication_socket.close()
+                                break
                             cache.pop(0)
             communication_socket.close()
         except ConnectionResetError:

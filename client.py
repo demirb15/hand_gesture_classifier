@@ -1,5 +1,8 @@
+import ast
 import base64
 import socket
+import threading
+
 import imutils
 import cv2
 import requests
@@ -12,7 +15,12 @@ BUFFER_SIZE = 65536
 
 def listener(client: socket.socket):
     while message := client.recv(BUFFER_SIZE):
-        print(message)
+        decoded_message = message.decode(encoding='UTF-8')
+        dict_message = ast.literal_eval(decoded_message)
+        static_c = dict_message['static']
+        dynamic_c = dict_message['dynamic']
+        print(static_c)
+        print(dynamic_c)
 
 
 def main():
@@ -23,6 +31,8 @@ def main():
         client.connect((HOST, PORT))
     else:
         return
+    x_thread = threading.Thread(target=listener, args=(client,), daemon=True)
+    x_thread.start()
     capture = cv2.VideoCapture(0)
     cv2.namedWindow("SENDING VIDEO")
     while capture.isOpened():
