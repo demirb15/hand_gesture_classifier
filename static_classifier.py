@@ -68,7 +68,7 @@ class StaticClassifier:
         data_x = numpy.array(samples)
         data_x = data_x.reshape(-1, data_x.shape[1])
         data_y = numpy.array(expected).reshape(-1, 1)
-        x_train, x_test, y_train, y_test = train_test_split(data_x, data_y, test_size=0.33, random_state=42)
+        x_train, x_test, y_train, y_test = train_test_split(data_x, data_y, test_size=0.33)
         y_train = self.multi_label_binarizer.fit_transform(y_train)
         y_test = self.multi_label_binarizer.transform(y_test)
         self.feature_vector = x_test.shape[1]
@@ -77,7 +77,7 @@ class StaticClassifier:
             pickle.dump(self.multi_label_binarizer, f)
         return x_train, x_test, y_train, y_test
 
-    def model_fit(self, epochs=100, batch_size=10):
+    def model_fit(self, epochs=100, batch_size=50):
         x_train, x_test, y_train, y_test = self.load_data()
         self.model_create()
         print("[INFO] training network...")

@@ -8,7 +8,7 @@ import imutils
 import cv2
 import requests
 
-HOST = socket.gethostbyname(socket.getfqdn())
+HOST = "192.168.1.38"  # socket.gethostbyname(socket.getfqdn())
 PORT = 6969
 BUFFER_SIZE = 65536
 
@@ -30,7 +30,7 @@ def listener(client: socket.socket):
 def main():
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     client.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, BUFFER_SIZE)
-    res = requests.get('http://127.0.0.1:5000/')
+    res = requests.get(f'http://{HOST}:5000/')
     if res.text == Connection.SUCCESS.value:
         client.connect((HOST, PORT))
     else:

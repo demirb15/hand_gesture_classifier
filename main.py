@@ -12,8 +12,8 @@ from static_classifier import StaticClassifier
 if __name__ == '__main__':
     dc = DynamicClassifier()
     sc = StaticClassifier()
-    dc.model_fit(100)
-    # sc.model_fit(300)
+    # dc.model_fit(100)
+    sc.model_fit(300)
     exit()
     dc.load_model()
     sc.load_model()

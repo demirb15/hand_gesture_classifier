@@ -14,7 +14,7 @@ from flask import Flask, request
 
 
 class ClassificationServer:
-    HOST = socket.gethostbyname(socket.getfqdn())
+    HOST = "0.0.0.0"  # socket.gethostbyname(socket.getfqdn())
     PORT = 6969
     BUFFER_SIZE = 65536
     detector = HandDetector()
@@ -33,7 +33,7 @@ class ClassificationServer:
 
     def run_server(self):
         with self as this:
-            this.app.run()
+            this.app.run(host=self.HOST)
 
     def __enter__(self):
         self.start_server()
@@ -83,7 +83,7 @@ class ClassificationServer:
                         current_package_timestamp = time.perf_counter()
                         sc_prediction = self.s_classifier.predict(landmarks)
                         cache.append(landmarks)
-                        if len(cache) > 20:
+                        if len(cache) > 10:
                             dc_prediction = self.d_classifier.predict(numpy.array(cache))
                             res = str(
                                 {

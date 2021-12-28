@@ -1,2 +1,0 @@
-This process includes create conseq vectors that draws hand 
-rather than flat vectors normalized to wrist

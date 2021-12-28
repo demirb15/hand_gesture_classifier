@@ -2,6 +2,7 @@ import mediapipe
 import numpy
 import cv2
 
+
 class HandDetector:
     solutions_hands = mediapipe.solutions.hands
 

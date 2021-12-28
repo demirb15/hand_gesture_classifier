@@ -110,7 +110,7 @@ class DynamicClassifier:
                                                    verbose=1)
         return
 
-    def model_fit(self, epochs=100, batch_size=10):
+    def model_fit(self, epochs=100, batch_size=50):
         x_train, x_test, y_train, y_test = self.load_data()
         self.model_create()
         print("[INFO] training network...")
@@ -165,8 +165,8 @@ def process_feature(feature):
     """
     f = feature.reshape(-1, 21, 3)
     feature_seq = []
-    frame_len = 12
-    for index in range(0, len(f) - frame_len, 5):
+    frame_len = 8
+    for index in range(0, len(f) - frame_len, 2):
         f_to_track = [0, 4, 8, 12, 16, 20]
         extracted = f[index:index + frame_len, f_to_track, :] - f[index + 1:index + 1 + frame_len, f_to_track, :]
         norms = numpy.linalg.norm(extracted, axis=2).reshape((frame_len, len(f_to_track), 1))
