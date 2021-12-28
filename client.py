@@ -1,5 +1,4 @@
 import time
-
 from connection_status import Connection
 import ast
 import base64
